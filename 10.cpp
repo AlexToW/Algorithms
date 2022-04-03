@@ -97,7 +97,7 @@ void TestAll() {
         }
     }
     if(failed == 0) {
-        std::cerr << "All test passed!" << std::endl;
+        std::cerr << "All tests passed!" << std::endl;
     } else if(failed == 1){
         std::cerr << failed << " test failed!" << std::endl;
         exit(1);
