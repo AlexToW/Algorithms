@@ -72,7 +72,8 @@ public:
         return head;
     }
 
-    ListNode* removeNthFromEnd(ListNode* head, int n) {
+    ListNode* removeNthFromEnd2(ListNode* head, int n) {
+        // необходимо 2 прохода по списку
         int l = 1;
         ListNode* h = head;
         while(h->next) {
@@ -85,6 +86,26 @@ public:
             return NULL;
         }
         return removeNthfromBegin(head, l - n);
+    }
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        // необходим 1 проход по списку
+        if(!head) {
+            return nullptr;
+        }
+        ListNode head_of_head(-1);
+        head_of_head.next = head;
+        
+        ListNode* first = &head_of_head;
+        ListNode* last = &head_of_head;
+        for(int i = 0; i < n; i++) {
+            first = first->next;
+        }
+        while(first->next) {
+            first = first->next;
+            last = last->next;
+        }
+        last->next = last->next->next;
+        return head_of_head.next;
     }
 };
 
