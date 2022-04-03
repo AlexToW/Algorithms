@@ -56,37 +56,6 @@ struct ListNode {
 
 class Solution {
 public:
-    ListNode* removeNthfromBegin(ListNode* head, int n) {
-        if(n == 0) {
-            return head->next;
-        }
-        int cnt = 0;
-        ListNode* prev = head;
-        ListNode* tmp = head;
-        while(cnt != n) {
-            prev = tmp;
-            tmp = tmp->next;
-            cnt++;
-        }
-        prev->next = tmp->next;
-        return head;
-    }
-
-    ListNode* removeNthFromEnd2(ListNode* head, int n) {
-        // необходимо 2 прохода по списку
-        int l = 1;
-        ListNode* h = head;
-        while(h->next) {
-            l++;
-            h = h->next;
-        }
-        //cout << l << endl;
-        //cout << l - n << endl;
-        if(l == 1) {
-            return NULL;
-        }
-        return removeNthfromBegin(head, l - n);
-    }
     ListNode* removeNthFromEnd(ListNode* head, int n) {
         // необходим 1 проход по списку
         if(!head) {
