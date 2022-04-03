@@ -32,73 +32,77 @@ template <class A, class B>
 void AssertEqual(const A& a, const B& b) {
     if(a != b) {
         std::cerr << a << " != " << b << std::endl;
+        throw std::runtime_error("");
     }
 }
 
 class Solution {
 public:
-void reverseWord(string& s, string::iterator l_it, string::iterator r_it) {
-        if(s.size() == 1) {
-            return;
-        }
-        auto l = l_it;
-        auto r = r_it;
-        cout << "To reverseWord: ";
-        for(auto it = l_it; it != r_it; ++it) {
-            cout << *it;
-        }
-        cout << endl;
-        while(l <= r) {
-            char tmp = *l;
-            *l = *r;
-            *r = tmp;
-            l++;
-            r--;
-        }
-        cout << "From reverseWord: ";
-        for(auto it = l_it; it != r_it; ++it) {
-            cout << *it;
-        }
-        cout << endl;
-    }
     string reverseWords(string s) {
-        string res = s;
-        auto space_it_f = find(begin(res), end(res), ' ');
-        auto space_it_l = find(space_it_f+1, end(res), ' ');
-        while(space_it_l < end(res)) {
-            reverseWord(res, space_it_f, space_it_l);
-            space_it_f = space_it_l;
-            space_it_l = find(space_it_f+1, end(res), ' ');
+        for(size_t i = 0; i < s.length(); i++) {
+            if(s[i] != ' ') {
+                size_t j = i;
+                while(j < s.length() && s[j] != ' ') {
+                    j++;
+                }
+                reverse(begin(s) + i, begin(s) + j);
+                i = j - 1;
+            }
         }
-        cout << "res: " << res << endl;
-        return res;
+        return s;
     }
 };
 
 void TestAll() {
+    int failed = 0;
     {
         Solution sol;
         string s = "da ad";
         string res = "ad da";
-        AssertEqual(sol.reverseWords(s), res);
+        try {
+            AssertEqual(sol.reverseWords(s), res);
+        } catch (runtime_error& e) {
+            failed++;
+        }
     }
     {
         Solution sol;
         string s = "No oh";
         string res = "oN ho";
-        AssertEqual(sol.reverseWords(s), res);
+        try {
+            AssertEqual(sol.reverseWords(s), res);
+        } catch (runtime_error& e) {
+            failed++;
+        }
     }
     {
         Solution sol;
         string s = "Let's take LeetCode contest";
         string res = "s'teL ekat edoCteeL tsetnoc";
-        AssertEqual(sol.reverseWords(s), res);
+        try {
+            AssertEqual(sol.reverseWords(s), res);
+        } catch (runtime_error& e) {
+            failed++;
+        }
     }
     {
         Solution sol;
         string s = "God Ding";
         string res = "doG gniD";
-        AssertEqual(sol.reverseWords(s), res);
+        try {
+            AssertEqual(sol.reverseWords(s), res);
+        } catch (runtime_error& e) {
+            failed++;
+        }
+    }
+    if(failed == 0) {
+        std::cerr << "All test passed!" << std::endl;
+    } else if(failed == 1){
+        std::cerr << failed << " test failed!" << std::endl;
+        exit(1);
+    } else {
+        std::cerr << failed << " test failed!" << std::endl;
+        exit(1);
     }
 }
 
