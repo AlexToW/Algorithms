@@ -1,5 +1,5 @@
 /*
-    https://leetcode.com/problems/flood-fill/
+    https://leetcode.com/problems/max-area-of-island/
 */
 
 #include <iostream>
@@ -61,33 +61,58 @@ public:
         return !(i < 0 || (size_t)i >= image.size() || j < 0 || (size_t)j >= image[0].size());
     }
 
-    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
-        if(newColor == image[sr][sc]) {
-            return image;
+    int MaxArea(vector<vector<int>>& grid, int x0, int y0) {
+        if(grid[x0][y0] == 0 || grid[x0][y0] == 2) {
+            return 0;
         }
+        int res = 1;
         queue<pair<int, int>> q;
-        q.push({sr, sc});
-        int old_color = image[sr][sc];
+        q.push({x0, y0});
+
         while(!q.empty()) {
             auto p = q.front();
-            image[p.first][p.second] = newColor;
+            grid[p.first][p.second] = 2; // 2 <==> already visited
             q.pop();
             int x = p.first, y = p.second;
-            if(InRange(image, x+1, y) && image[x+1][y] == old_color) {
+            if(InRange(grid, x+1, y) && grid[x+1][y] == 1) {
+                res++;
+                grid[x+1][y] = 2;
                 q.push({x+1, y});
             }
-            if(InRange(image, x-1, y) && image[x-1][y] == old_color) {
+            if(InRange(grid, x-1, y) && grid[x-1][y] == 1) {
+                res++;
+                grid[x-1][y] = 2;
                 q.push({x-1, y});
             }
-            if(InRange(image, x, y+1) && image[x][y+1] == old_color) {
+            if(InRange(grid, x, y+1) && grid[x][y+1] == 1) {
+                res++;
+                grid[x][y+1] = 2;
                 q.push({x, y+1});
             }
-            if(InRange(image, x, y-1) && image[x][y-1] == old_color) {
+            if(InRange(grid, x, y-1) && grid[x][y-1] == 1) {
+                res++;
+                grid[x][y-1] = 2;
                 q.push({x, y-1});
             }
-            //cout << image << endl;
+            //cout << grid << endl;
+            //cout << res << endl;
         }
-        return image;
+        return res;
+    }
+
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int max = 0;
+        for(int x = 0; x < (int)grid.size(); x++) {
+            for(int y = 0; y < (int)grid[0].size(); y++) {
+                if(grid[x][y] == 1) {
+                    int tmp = MaxArea(grid, x, y);
+                    if(tmp > max) {
+                        max = tmp;
+                    }
+                }
+            }
+        }
+        return max;
     }
 };
 
@@ -97,58 +122,54 @@ void TestAll() {
 
     {
         Solution sol;
-        vector<vector<int>> image = {
-            {1, 1, 1},
-            {1, 1, 0},
-            {1, 0, 1}
+        vector<vector<int>> grid = {
+            {0,0,1,0,0,0,0,1,0,0,0,0,0},
+            {0,0,0,0,0,0,0,1,1,1,0,0,0},
+            {0,1,1,0,1,0,0,0,0,0,0,0,0},
+            {0,1,0,0,1,1,0,0,1,0,1,0,0},
+            {0,1,0,0,1,1,0,0,1,1,1,0,0},
+            {0,0,0,0,0,0,0,0,0,0,1,0,0},
+            {0,0,0,0,0,0,0,1,1,1,0,0,0},
+            {0,0,0,0,0,0,0,1,1,0,0,0,0}
         };
-        int sr = 1, sc = 1;
-        vector<vector<int>> res = {
-            {2, 2, 2},
-            {2, 2, 0},
-            {2, 0, 1}
-        };
-        int NewColor = 2;
         try {
-            AssertEqual(sol.floodFill(image,sr, sc, NewColor), res);
+            AssertEqual(sol.maxAreaOfIsland(grid), 6);
         } catch (runtime_error& e) {
             failed++;
         }
     }
     {
         Solution sol;
-        vector<vector<int>> image = {
-            {0, 0, 0},
-            {0, 0, 0},
-            {0, 0, 0}
+        vector<vector<int>> grid = {
+            {0,0,1,0,0,0,0,1,0,0,0,0,0}
         };
-        int sr = 1, sc = 1;
-        vector<vector<int>> res = {
-            {2, 2, 2},
-            {2, 2, 2},
-            {2, 2, 2}
-        };
-        int NewColor = 2;
         try {
-            AssertEqual(sol.floodFill(image,sr, sc, NewColor), res);
+            AssertEqual(sol.maxAreaOfIsland(grid), 1);
         } catch (runtime_error& e) {
             failed++;
         }
     }
     {
         Solution sol;
-        vector<vector<int>> image = {
-            {0, 0, 0},
-            {0, 1, 1}
+        vector<vector<int>> grid = {
+            {0,0,0,0,0,0,0,0,0,0,0,0,0}
         };
-        int sr = 1, sc = 1;
-        vector<vector<int>> res = {
-            {0, 0, 0},
-            {0, 1, 1}
-        };
-        int NewColor = 1;
         try {
-            AssertEqual(sol.floodFill(image,sr, sc, NewColor), res);
+            AssertEqual(sol.maxAreaOfIsland(grid), 0);
+        } catch (runtime_error& e) {
+            failed++;
+        }
+    }
+    {
+        Solution sol;
+        vector<vector<int>> grid = {
+            {1,1,0,0,0},
+            {1,1,0,1,1},
+            {0,0,0,1,1},
+            {0,0,0,1,1}
+        };
+        try {
+            AssertEqual(sol.maxAreaOfIsland(grid), 6);
         } catch (runtime_error& e) {
             failed++;
         }
